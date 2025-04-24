@@ -1,6 +1,6 @@
 # pokemon_test.py
-from Gen3Save.pokemondata.Gen3Pokemon import Gen3Pokemon
-from Gen3Save.pokemondata.Gen3Save import Gen3Save
+from Gen3Pokemon import Gen3Pokemon
+from Gen3Save import Gen3Save
 import struct
 
 # 3) Defina offsets relativos à Section 1 para cada grupo de jogos
