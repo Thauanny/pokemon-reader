@@ -1,5 +1,4 @@
-import json, struct, sys, os
-from operator import xor
+import struct, sys, os
 from Gen3Pokemon import Gen3Pokemon
 
 class Gen3Save:
@@ -111,7 +110,6 @@ class Gen3Save:
                 if pkm and hasattr(pkm, 'species'):
                     self.boxes.append(pkm)
             except Exception as e:
-                print(f"[BOX] Erro ao carregar Pokémon {i}: {e}")
                 continue
 
         # Carregar time

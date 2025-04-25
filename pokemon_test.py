@@ -1,9 +1,9 @@
-# pokemon_test.py
+
 from Gen3Pokemon import Gen3Pokemon
 from Gen3Save import Gen3Save
 import struct
 
-# 3) Defina offsets relativos à Section 1 para cada grupo de jogos
+POKEMONS_PER_BOX = 30
 VERSION_OFFSETS = {
     "RSE": 0x0238,  # Ruby/Sapphire/Emerald party offset :contentReference[oaicite:2]{index=2}
     "FRLG": 0x0038,  # FireRed/LeafGreen party offset :contentReference[oaicite:3]{index=3}
@@ -19,7 +19,7 @@ def find_section1_start(block: bytes) -> int:
             return i * 4096
     raise RuntimeError(
         "Section 1 não encontrada"
-    )  # :contentReference[oaicite:4]{index=4}
+    ) 
 
 
 def try_version(block: bytes, sect1: int, offset: int) -> bool:
@@ -27,7 +27,7 @@ def try_version(block: bytes, sect1: int, offset: int) -> bool:
     start = sect1 + offset
     data100 = block[
         start : start + 100
-    ]  # party Pokémon usa 100 bytes :contentReference[oaicite:5]{index=5}
+    ] 
     try:
         Gen3Pokemon(data100)
         return True
@@ -45,28 +45,33 @@ def detect_gen3_version(block: bytes) -> str:
 
 
 def main():
-    # Carrega o save e seleciona bloco ativo (feito internamente em Gen3Save)
-    #save = Gen3Save("leaf_green.sav")
-    # A própria Gen3Save carrega o bloco correto A ou B :contentReference[oaicite:6]{index=6}
-    raw = open("leaf_green.sav", "rb").read()
-    block = raw[0:57344] if True else raw  # placeholder, Gen3Save já faz
+    raw = open("assets/firered.sav", "rb").read()
+    block = raw[0:57344] if True else raw
 
     vers = detect_gen3_version(block)
     print("Versão Gen3 detectada:", vers)
 
 
-    save = Gen3Save('leaf_green.sav')
+    save = Gen3Save('assets/firered.sav')
+    print()
     print("TIME")
     for pkm in save.team:
-        print(f"{pkm.species['name']}/{pkm.name} Level {pkm.level} - Location: ")
+        print(f"  {pkm.species['name']}/{pkm.name} Level {pkm.level} - Location: ")
+        
+    print()
+    total = len(save.boxes)
+    print(f"Total de Pokémon em todas as boxes: {total}\n")
 
-    # Imprimir a box
-    print("")
-    print(f"BOX 1 {len(save.boxes)}")
-    for pkm in save.boxes:
-        # print("Genero e nome")
-        # print(f"{save.gender} - {pkm.trainer['name']}")
-        print(f"{pkm.species['name']}/{pkm.name} Level {pkm.level}")
+    num_boxes = (total + POKEMONS_PER_BOX - 1) // POKEMONS_PER_BOX
+    for box_idx in range(num_boxes):
+        start = box_idx * POKEMONS_PER_BOX
+        end   = start + POKEMONS_PER_BOX
+        box = save.boxes[start:end]
+        
+        print(f"BOX {box_idx+1} ({len(box)} slots ocupados)")
+        for pkm in box:
+            print(f"  {pkm.species['name']}/{pkm.name} Level {pkm.level}")
+        print() 
 
 if __name__ == "__main__":
     main()
