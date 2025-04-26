@@ -45,33 +45,33 @@ def detect_gen3_version(block: bytes) -> str:
 
 
 def main():
-    raw = open("assets/firered.sav", "rb").read()
+    raw = open("assets/sapphire.sav", "rb").read()
     block = raw[0:57344] if True else raw
 
     vers = detect_gen3_version(block)
     print("Versão Gen3 detectada:", vers)
 
 
-    save = Gen3Save('assets/firered.sav')
+    save = Gen3Save('assets/sapphire.sav')
     print()
     print("TIME")
     for pkm in save.team:
-        print(f"  {pkm.species['name']}/{pkm.name} Level {pkm.level} - Location: ")
+        print(f"  {pkm.species['name']}/{pkm.name} Level {pkm.level} - Location: {pkm.location} Nature: {pkm.nature} Moves:{pkm.moves} ")
         
     print()
     total = len(save.boxes)
     print(f"Total de Pokémon em todas as boxes: {total}\n")
 
-    num_boxes = (total + POKEMONS_PER_BOX - 1) // POKEMONS_PER_BOX
-    for box_idx in range(num_boxes):
-        start = box_idx * POKEMONS_PER_BOX
-        end   = start + POKEMONS_PER_BOX
-        box = save.boxes[start:end]
+    # num_boxes = (total + POKEMONS_PER_BOX - 1) // POKEMONS_PER_BOX
+    # for box_idx in range(num_boxes):
+    #     start = box_idx * POKEMONS_PER_BOX
+    #     end   = start + POKEMONS_PER_BOX
+    #     box = save.boxes[start:end]
         
-        print(f"BOX {box_idx+1} ({len(box)} slots ocupados)")
-        for pkm in box:
-            print(f"  {pkm.species['name']}/{pkm.name} Level {pkm.level}")
-        print() 
+    #     print(f"BOX {box_idx+1} ({len(box)} slots ocupados)")
+    #     for pkm in box:
+    #         print(f"  {pkm.species['name']}/{pkm.name} Level {pkm.level} Nature: {pkm.nature} Moves:{pkm.moves}")
+    #     print() 
 
 if __name__ == "__main__":
     main()
